@@ -5,6 +5,8 @@
  */
 package org.springframework.social.reddit.connect;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.social.ApiException;
 import org.springframework.social.connect.ApiAdapter;
 import org.springframework.social.connect.ConnectionValues;
@@ -17,8 +19,11 @@ import org.springframework.social.reddit.api.impl.RedditPaths;
 /**
  *
  * @author ahmedaly
- */public class RedditAdapter implements ApiAdapter<Reddit> {
+ */
+public class RedditAdapter implements ApiAdapter<Reddit> {
+	private final Log logger = LogFactory.getLog(getClass());
 
+	
 	public boolean test(Reddit reddit) {
 		try {
 			reddit.userOperations().getUserProfile();
@@ -40,6 +45,7 @@ import org.springframework.social.reddit.api.impl.RedditPaths;
 
     @Override
     public UserProfile fetchUserProfile(Reddit reddit) {
+    	logger.debug("Fetching user profile.");    	
         RedditProfile profile = reddit.userOperations().getUserProfile();
         return new UserProfileBuilder()
                 .setUsername(profile.getUsername())

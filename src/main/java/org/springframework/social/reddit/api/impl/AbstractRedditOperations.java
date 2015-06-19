@@ -1,11 +1,14 @@
 package org.springframework.social.reddit.api.impl;
 
 import java.net.URI;
-import java.util.ArrayList;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.social.MissingAuthorizationException;
 import org.springframework.social.support.URIBuilder;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -15,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
  * @author ahmedaly
  */
 public class AbstractRedditOperations {
+	private final Log logger = LogFactory.getLog(getClass());
 
     private final RestTemplate restTemplate;
     private boolean isAuthorized;
@@ -32,7 +36,22 @@ public class AbstractRedditOperations {
     }
 
     protected <T> T getEntity(String url, Class<T> type) {
-        return restTemplate.getForObject(url, type);
+    	try {
+    		return restTemplate.getForObject(url, type);
+    	}
+    	catch(HttpClientErrorException e) {
+    		if(e.getMessage().indexOf("429") != -1) {
+    			logger.debug("Stingy Reddit rate limit encountered.  Waiting 2 secs before retrying...");
+    			try {
+					Thread.sleep(2000);
+				}
+				catch (InterruptedException e1) {
+				}
+    			return restTemplate.getForObject(url, type);
+    		}
+    		else
+    			throw e;
+    	}
     }
 
     protected URI buildUri(String path) {
