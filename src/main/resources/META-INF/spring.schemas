@@ -1,0 +1,2 @@
+http\://www.springframework.org/schema/social/spring-social-reddit.xsd=org/springframework/social/reddit/config/xml/spring-social-reddit-1.0.xsd
+http\://www.springframework.org/schema/social/spring-social-reddit-1.0.xsd=org/springframework/social/reddit/config/xml/spring-social-reddit-1.0.xsd

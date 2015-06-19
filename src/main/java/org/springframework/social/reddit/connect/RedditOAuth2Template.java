@@ -10,10 +10,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -26,6 +26,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONValue;
 import org.springframework.social.oauth2.AccessGrant;
+import org.springframework.social.oauth2.GrantType;
+import org.springframework.social.oauth2.OAuth2Parameters;
 import org.springframework.social.oauth2.OAuth2Template;
 import org.springframework.social.reddit.api.impl.RedditPaths;
 import org.springframework.util.MultiValueMap;
@@ -38,13 +40,25 @@ public class RedditOAuth2Template extends OAuth2Template {
 
     private String clientId;
     private String clientSecret;
+	private String userAgent;
 
-    public RedditOAuth2Template(String clientId, String clientSecret) {
+    public RedditOAuth2Template(String clientId, String clientSecret, String userAgent) {
         super(clientId, clientSecret, RedditPaths.OAUTH_AUTH_URL, RedditPaths.OAUTH_TOKEN_URL);
         this.clientId = clientId;
         this.clientSecret = clientSecret;
+        this.userAgent = userAgent;
     }
 
+    public String buildAuthenticateUrl(OAuth2Parameters parameters) {
+    	parameters.setScope("identity");
+    	return super.buildAuthenticateUrl(parameters);
+    }
+    
+    public String buildAuthenticateUrl(GrantType grantType, OAuth2Parameters parameters) {
+    	parameters.setScope("identity");
+    	return super.buildAuthenticateUrl(grantType, parameters);
+    }
+    
     private String getAccessToken(String code, String redirectUrl) throws UnsupportedEncodingException, IOException {
         DefaultHttpClient httpclient = new DefaultHttpClient();
         try {
@@ -62,7 +76,7 @@ public class RedditOAuth2Template extends OAuth2Template {
             nvps.add(new BasicNameValuePair("redirect_uri", redirectUrl));
 
             httppost.setEntity(new UrlEncodedFormEntity(nvps));
-            httppost.addHeader("User-Agent", "a unique user agent");
+            httppost.addHeader("User-Agent", userAgent);
             httppost.setHeader("Accept", "any;");
 
             HttpResponse request = httpclient.execute(httppost); 

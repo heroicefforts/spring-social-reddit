@@ -15,8 +15,8 @@ import org.springframework.social.reddit.api.impl.RedditTemplate;
  */
 public final class RedditServiceProvider extends AbstractOAuth2ServiceProvider<Reddit> {
 
-    public RedditServiceProvider(String clientId, String clientSecret) {
-        super(new RedditOAuth2Template(clientId, clientSecret));
+    public RedditServiceProvider(String clientId, String clientSecret, String userAgent) {
+        super(new RedditOAuth2Template(clientId, clientSecret, userAgent));
     }
 
     @Override

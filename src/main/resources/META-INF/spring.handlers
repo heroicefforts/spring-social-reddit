@@ -1,0 +1,1 @@
+http\://www.springframework.org/schema/social/reddit=org.springframework.social.reddit.config.xml.RedditNamespaceHandler
