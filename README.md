@@ -20,6 +20,13 @@ This fork adds XML configuration support to the Reddit plug-in similar to Twitte
 2.  Add the [json-simple](http://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple/1.1.1) dependency to your build.
 3.  Add the following line to your spring-social.xml spring definition file (substitute [...]):
 
+...<br/>
+`xmlns:facebook="http://www.springframework.org/schema/social/facebook"`<br/>
+**`+ xmlns:reddit="http://www.springframework.org/schema/social/reddit"`**<br/>
+...<br/>
+`http://www.springframework.org/schema/social/facebook`<br/> `http://www.springframework.org/schema/social/spring-social-facebook.xsd`<br/>
+**`+ http://www.springframework.org/schema/social/reddit`<br/> `http://www.springframework.org/schema/social/spring-social-reddit.xsd"`**<br/>
+...<br/>
   `<facebook:config app-id="${facebook.app.id}" app-secret="${facebook.app.pw}"/>`<br/>
   `<twitter:config app-id="${twitter.app.id}" app-secret="${twitter.app.pw}"/>`<br/>
 **\+ `<reddit:config app-id="${reddit.app.id}" app-secret="${reddit.app.pw}"
