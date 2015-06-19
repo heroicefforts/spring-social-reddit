@@ -5,8 +5,8 @@
  */
 package org.springframework.social.reddit.connect;
 
-import static org.junit.Assert.*;
-import org.junit.Before;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.social.connect.UserProfile;
