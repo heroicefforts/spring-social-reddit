@@ -24,8 +24,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONValue;
 import org.springframework.social.oauth2.AccessGrant;
 import org.springframework.social.oauth2.OAuth2Template;
@@ -37,8 +35,6 @@ import org.springframework.util.MultiValueMap;
  * @author ahmedaly
  */
 public class RedditOAuth2Template extends OAuth2Template {
-
-    private static final Logger LOG = LogManager.getLogger(RedditOAuth2Template.class);
 
     private String clientId;
     private String clientSecret;
