@@ -14,14 +14,16 @@ import org.springframework.social.reddit.api.impl.RedditTemplate;
  * @author ahmedaly
  */
 public final class RedditServiceProvider extends AbstractOAuth2ServiceProvider<Reddit> {
-
+	private final String userAgent;
+	
     public RedditServiceProvider(String clientId, String clientSecret, String userAgent) {
         super(new RedditOAuth2Template(clientId, clientSecret, userAgent));
+        this.userAgent = userAgent;
     }
 
     @Override
     public Reddit getApi(String accessToken) {
-        return new RedditTemplate(accessToken);
+        return new RedditTemplate(userAgent, accessToken);
     }
 
 }
