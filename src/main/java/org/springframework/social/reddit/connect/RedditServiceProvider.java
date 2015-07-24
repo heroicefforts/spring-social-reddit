@@ -5,6 +5,7 @@
  */
 package org.springframework.social.reddit.connect;
 
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.social.oauth2.AbstractOAuth2ServiceProvider;
 import org.springframework.social.reddit.api.Reddit;
 import org.springframework.social.reddit.api.impl.RedditTemplate;
@@ -14,16 +15,16 @@ import org.springframework.social.reddit.api.impl.RedditTemplate;
  * @author ahmedaly
  */
 public final class RedditServiceProvider extends AbstractOAuth2ServiceProvider<Reddit> {
-	private final String userAgent;
+	private CloseableHttpClient client;
 	
-    public RedditServiceProvider(String clientId, String clientSecret, String userAgent) {
-        super(new RedditOAuth2Template(clientId, clientSecret, userAgent));
-        this.userAgent = userAgent;
+    public RedditServiceProvider(CloseableHttpClient httpClient, String clientId, String clientSecret) {
+        super(new RedditOAuth2Template(httpClient, clientId, clientSecret));
+        this.client = httpClient;
     }
 
     @Override
     public Reddit getApi(String accessToken) {
-        return new RedditTemplate(userAgent, accessToken);
+        return new RedditTemplate(client, accessToken);
     }
 
 }

@@ -5,22 +5,14 @@
  */
 package org.springframework.social.reddit.api.impl;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-
-import org.springframework.http.HttpRequest;
-import org.springframework.http.client.ClientHttpRequestExecution;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
-import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.http.client.support.HttpRequestWrapper;
+import org.apache.http.client.HttpClient;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.social.oauth2.AbstractOAuth2ApiBinding;
 import org.springframework.social.reddit.api.MessageOperations;
 import org.springframework.social.reddit.api.Reddit;
 import org.springframework.social.reddit.api.SubredditOperations;
 import org.springframework.social.reddit.api.ThreadOperations;
 import org.springframework.social.reddit.api.UserOperations;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * Implementation of Reddit API Binding interface.
@@ -35,50 +27,15 @@ import org.springframework.web.client.RestTemplate;
  */
 public class RedditTemplate extends AbstractOAuth2ApiBinding implements Reddit {
 
-    private String accessToken;
-
     private MessageOperations messageOperations;
     private UserOperations userOperations;
     private SubredditOperations subredditOperations;
     private ThreadOperations threadOperations;
 
-    public RedditTemplate() {
-        setUp("a user agent");
-    }
-
-    public RedditTemplate(String userAgent, String accessToken) {
+    public RedditTemplate(HttpClient client, String accessToken) {
         super(accessToken);
-        this.accessToken = accessToken;
-        setUp(userAgent);
-    }
-
-    private final class UserAgentInterceptor implements ClientHttpRequestInterceptor {
-    	private final String userAgent;
-
-		public UserAgentInterceptor(String userAgent) {
-    		this.userAgent = userAgent;
-    	}
-    	
-		@Override
-		public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
-				throws IOException {
-			HttpRequestWrapper requestWrapper = new HttpRequestWrapper(request);
-			requestWrapper.getHeaders().set("User-Agent", userAgent);
-			 
-			return execution.execute(requestWrapper, body);
-		}
-    }
-    
-    private void setUp(final String userAgent) {
-    	RestTemplate template = getRestTemplate();
-
-    	ArrayList<ClientHttpRequestInterceptor> interceptors = new ArrayList<ClientHttpRequestInterceptor>();
-    	if(template.getInterceptors() != null)
-    		interceptors.addAll(template.getInterceptors());
-    	interceptors.add(new UserAgentInterceptor(userAgent));
-    	template.setInterceptors(interceptors);
-    	
-        this.userOperations = new UserTemplate(template, isAuthorized());
+        this.setRequestFactory(new HttpComponentsClientHttpRequestFactory(client));
+        this.userOperations = new UserTemplate(getRestTemplate(), isAuthorized());
     }
 
     @Override
